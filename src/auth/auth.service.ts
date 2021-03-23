@@ -17,6 +17,7 @@ import { JwtPayload } from './jwt/jwt-payload.interface'
 import { DeleteUserDto } from './dto/user-delete.dto'
 import { EditUserDto } from './dto/user-edit.dto'
 import { GetUserDto } from './dto/user-get.dto'
+import { User } from './user/user.entity'
 
 @Injectable()
 export class AuthService {
@@ -124,15 +125,37 @@ export class AuthService {
     return await this.userRepository.getUsers()
   }
 
-  async deleteUser(deleteUserDto: DeleteUserDto): Promise<void> {
-    await this.userRepository.deleteUser(deleteUserDto)
+  /*
+    Метод для удаления пользовател
+    В случае успеха возвращает удалённого пользователя
+
+    В случае если пользователь не будет найден 
+    DeleteUser выбросит исключение
+
+    Так-же метод удаляет рефреш токены пренадлежавшие пользователю
+  */
+
+  async deleteUser(deleteUserDto: DeleteUserDto): Promise<User> {
+    let deletedUser = await this.userRepository.deleteUser(deleteUserDto)
     await this.refreshTokenRepository.deleteUserRefreshTokens(
       deleteUserDto.username
     )
+    return deletedUser
   }
 
-  async editUser(editUserDto: EditUserDto) {
+  /*
+    Метод для редактирования пользователя
+    В случае успеха возвращает отредактированного пользователя
+    И аннулирует рефреш токены пользователя
+
+    Либо выбрасывает эксепшены исходя из логики репозитория
+
+    Саму логику редактирования делегирует репозиторию
+  */
+
+  async editUser(editUserDto: EditUserDto): Promise<User> {
     let user = await this.userRepository.editUser(editUserDto)
     await this.refreshTokenRepository.deleteUserRefreshTokens(user.username)
+    return user
   }
 }
