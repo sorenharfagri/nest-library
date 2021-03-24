@@ -1,12 +1,14 @@
-import { IsNotEmpty, IsNumber } from 'class-validator'
-import { Transform } from 'class-transformer'
+import { IsInt, IsNotEmpty, IsNumber } from 'class-validator'
+import { Transform, Type } from 'class-transformer'
 
 export class GiveBookDto {
   @IsNotEmpty()
-  @Transform(bookID => parseInt(bookID), { toClassOnly: true })
+  @Type(() => Number)
+  @IsInt()
   userID: number
 
   @IsNotEmpty()
-  @Transform(bookID => parseInt(bookID), { toClassOnly: true })
+  @Type(() => Number)
+  @IsInt()
   bookID: number
 }

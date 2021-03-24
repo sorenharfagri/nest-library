@@ -1,8 +1,9 @@
-import { Transform } from 'class-transformer'
-import { IsNotEmpty } from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsInt, IsNotEmpty } from 'class-validator'
 
 export class ReturnBookDto {
   @IsNotEmpty()
-  @Transform(bookID => parseInt(bookID), { toClassOnly: true })
+  @Type(() => Number)
+  @IsInt()
   bookID: number
 }

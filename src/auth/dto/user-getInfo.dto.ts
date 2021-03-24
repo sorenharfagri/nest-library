@@ -1,10 +1,11 @@
-import { Transform } from 'class-transformer'
-import { IsNotEmpty, IsOptional } from 'class-validator'
+import { Type } from 'class-transformer'
+import { IsInt, IsNotEmpty, IsNumberString, IsOptional } from 'class-validator'
 import { ToBoolean } from 'src/helpers/ToBoolean'
 
 export class GetUserInfoDto {
   @IsNotEmpty()
-  @Transform(bookID => parseInt(bookID), { toClassOnly: true })
+  @Type(() => Number)
+  @IsInt()
   userID: number
 
   @IsOptional()
