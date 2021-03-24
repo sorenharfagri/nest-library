@@ -40,11 +40,10 @@ export class BookRepository extends Repository<Book> {
 
   async giveBook(user: User, book: Book) {
     if (book.user) {
-      throw new ConflictException('Book already taken by another person')
+      throw new ConflictException('Book already taken')
     }
 
     let userBooks = await user.books
-
     if (userBooks.length >= 5) {
       throw new ConflictException('You cannot take more than 5 books')
     }

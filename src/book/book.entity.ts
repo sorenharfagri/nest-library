@@ -16,7 +16,7 @@ export class Book extends BaseEntity {
   title: string
 
   @ManyToOne(type => User, user => user.books, {
-    eager: false,
+    eager: true,
     cascade: false,
     onDelete: 'SET NULL'
   })
