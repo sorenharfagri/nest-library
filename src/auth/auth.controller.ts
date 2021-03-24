@@ -16,7 +16,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto'
 import { JwtPairDto } from './dto/jwt-pair.dto'
 import { DeleteUserDto } from './dto/user-delete.dto'
 import { EditUserDto } from './dto/user-edit.dto'
-import { GetUserDto } from './dto/user-get.dto'
+import { GetUserInfoDto } from './dto/user-getInfo.dto'
 
 @Controller('auth')
 export class AuthController {
@@ -62,9 +62,9 @@ export class AuthController {
 
   @Get('/user')
   getUser(
-    @Body(new ValidationPipe({ transform: true })) getUserDto: GetUserDto
+    @Body(new ValidationPipe({ transform: true })) getUserDto: GetUserInfoDto
   ) {
-    return this.authService.getUser(getUserDto)
+    return this.authService.getUserInfo(getUserDto)
   }
 
   @Delete('/user')

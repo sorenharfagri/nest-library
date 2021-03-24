@@ -19,7 +19,7 @@ export class BookController {
   giveBook(
     @Body(new ValidationPipe({ transform: true })) giveBookDto: GiveBookDto
   ) {
-    return this.bookService.giveBookToUser(giveBookDto)
+    return this.bookService.giveBook(giveBookDto)
   }
 
   @Post()

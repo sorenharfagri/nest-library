@@ -16,8 +16,16 @@ import { JwtPairDto } from './dto/jwt-pair.dto'
 import { JwtPayload } from './jwt/jwt-payload.interface'
 import { DeleteUserDto } from './dto/user-delete.dto'
 import { EditUserDto } from './dto/user-edit.dto'
-import { GetUserDto } from './dto/user-get.dto'
+import { GetUserInfoDto } from './dto/user-getInfo.dto'
 import { User } from './user/user.entity'
+
+/*
+  Авторизация, операции с пользователями
+  
+  Сервис взят из моего другого проекта
+  К нему были прикурчены необходимые операции
+  В целом, его можно было попилить, и добавить отдельный userService
+*/
 
 @Injectable()
 export class AuthService {
@@ -117,9 +125,20 @@ export class AuthService {
     }
   }
 
-  async getUser(getUserDto: GetUserDto) {
+  /*
+    Получение информации о конкретном пользователе
+    На данный момент в dto лежит userID, по которому ищется пользователь
+    Само dto указывает какую именно инфу нужно достать
+    К примеру, booksTaken bool говорит о том, что нужно достать инфу о взятых книгах
+  */
+
+  async getUserInfo(getUserDto: GetUserInfoDto) {
     return await this.userRepository.getUserInfo(getUserDto)
   }
+
+  /*
+    Получение всех пользователей
+  */
 
   async getUsers() {
     return await this.userRepository.getUsers()
@@ -145,12 +164,9 @@ export class AuthService {
 
   /*
     Метод для редактирования пользователя
+    Параметры которые необходимо отредактировать указываются в dto
     В случае успеха возвращает отредактированного пользователя
     И аннулирует рефреш токены пользователя
-
-    Либо выбрасывает эксепшены исходя из логики репозитория
-
-    Саму логику редактирования делегирует репозиторию
   */
 
   async editUser(editUserDto: EditUserDto): Promise<User> {

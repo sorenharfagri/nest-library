@@ -15,6 +15,10 @@ export class Book extends BaseEntity {
   @Column({ unique: true })
   title: string
 
-  @ManyToOne(type => User, user => user.books, { eager: false })
+  @ManyToOne(type => User, user => user.books, {
+    eager: false,
+    cascade: false,
+    onDelete: 'SET NULL'
+  })
   user: User
 }

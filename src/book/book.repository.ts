@@ -31,6 +31,13 @@ export class BookRepository extends Repository<Book> {
     }
   }
 
+  /*
+    Метод для передачи книги пользователю
+    Выбрасывает исключения в случае если:
+    Книга уже кому-то пренадлежит
+    Пользователь имеет больше пяти книг
+  */
+
   async giveBook(user: User, book: Book) {
     if (book.user) {
       throw new ConflictException('Book already taken by another person')
@@ -38,7 +45,7 @@ export class BookRepository extends Repository<Book> {
 
     let userBooks = await user.books
 
-    if (userBooks.length > 5) {
+    if (userBooks.length >= 5) {
       throw new ConflictException('You cannot take more than 5 books')
     }
 

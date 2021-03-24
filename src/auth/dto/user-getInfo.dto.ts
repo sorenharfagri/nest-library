@@ -1,13 +1,8 @@
 import { Transform } from 'class-transformer'
-import {
-  IsBoolean,
-  IsBooleanString,
-  IsNotEmpty,
-  IsOptional
-} from 'class-validator'
+import { IsNotEmpty, IsOptional } from 'class-validator'
 import { ToBoolean } from 'src/helpers/ToBoolean'
 
-export class GetUserDto {
+export class GetUserInfoDto {
   @IsNotEmpty()
   @Transform(bookID => parseInt(bookID), { toClassOnly: true })
   userID: number

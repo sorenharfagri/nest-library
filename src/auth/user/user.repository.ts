@@ -13,7 +13,7 @@ import { User } from './user.entity'
 import { EditUserDto } from '../dto/user-edit.dto'
 import { DeleteUserDto } from '../dto/user-delete.dto'
 import { dbErrorCodes } from '../../config/db-error-codes'
-import { GetUserDto } from '../dto/user-get.dto'
+import { GetUserInfoDto } from '../dto/user-getInfo.dto'
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -49,7 +49,7 @@ export class UserRepository extends Repository<User> {
     return await this.findOne({ id: userID })
   }
 
-  async getUserInfo(getUserDto: GetUserDto) {
+  async getUserInfo(getUserDto: GetUserInfoDto) {
     const { userID, booksTaken } = getUserDto
 
     let user = await this.getUserById(userID)
@@ -94,6 +94,7 @@ export class UserRepository extends Repository<User> {
     try {
       return await user.remove()
     } catch (e) {
+      this.logger.log(`Error with save method: `, e)
       throw new InternalServerErrorException()
     }
   }
@@ -101,7 +102,6 @@ export class UserRepository extends Repository<User> {
   async editUser(editUserDto: EditUserDto) {
     const { newUsername, newPassword, currentUsername } = editUserDto
 
-    // Выбросит ли эксепшн, проверить
     let user = await this.findOne({ username: currentUsername })
 
     if (!user) {
@@ -132,6 +132,10 @@ export class UserRepository extends Repository<User> {
       }
     }
   }
+  /*
+    Метод для установки пользователя
+    Скрывает детали хеширования пароля
+  */
 
   async setUserPassword(user: User, password: string) {
     user.salt = await bcrypt.genSalt()

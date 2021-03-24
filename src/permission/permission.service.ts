@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { User } from 'src/auth/user/user.entity'
 import { UserRepository } from 'src/auth/user/user.repository'
 import { GiveSubscriptionDto } from './dto/subscription-give.dto'
+import { Subscription } from './entities/subscription.entity'
 import { SubscriptionRepository } from './repositories/subscription.repository'
 
 @Injectable()
@@ -14,11 +15,29 @@ export class PermissionService {
     private userRepository: UserRepository
   ) {}
 
-  async checkPermission(user: User) {
+  /*
+    Проверка наличия у пользователя какого-либо доступа для взятия книг
+    Возвращает boolean в зависимости от наличия доступов
+    Служит фасадом
+  */
+
+  async checkBookPermissions(user: User): Promise<Boolean> {
     return await this.subscriptionRepository.checkSubscription(user)
   }
 
-  async giveSubscription(giveSubscriptionDto: GiveSubscriptionDto) {
+  /*
+    Выдача пользователю подписки
+    В случае успеха возвращает подписку и пользователя
+    
+    Возвращает исключения в случае:
+    У пользователя уже имеется подписка
+    Пользователь не найден
+
+    Логику выдачи передаёт репозиторию
+  */
+  async giveSubscription(
+    giveSubscriptionDto: GiveSubscriptionDto
+  ): Promise<Subscription> {
     let user = await this.userRepository.getUserById(giveSubscriptionDto.userID)
     if (!user) {
       throw new BadRequestException(
